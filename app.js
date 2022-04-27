@@ -95,6 +95,11 @@ app.post("/states/:state/funfact", middleware.verifyStates, async(req, res, next
             "message": "State fun facts value required"
         });
     }
+    if(!Array.isArray(req.body.funfacts)){
+        return res.sendStatus(400).json({
+            "message": "State fun facts value must be an array"
+        });
+    }
 
     const data = statesArray[req.statesIndex];
     let result = await State.findOne({stateCode: data.code.toUpperCase()});
@@ -127,8 +132,7 @@ app.delete("/states/:state/funfact", middleware.verifyStates, async(req, res, ne
     let result = await State.findOne({stateCode: data.code.toUpperCase()});
 
     if(!result){
-        console.log("State has no fun facts to delete");
-        return res.sendStatus(400);
+        return res.status(400).json({"message": `No Fun Facts found for ${data.state}`});
         
     }
     if(req.body.index > result.funfacts.length || req.body.index <= 0){
