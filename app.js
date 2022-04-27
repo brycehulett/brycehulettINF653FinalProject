@@ -27,7 +27,7 @@ app.use('/', require('./routes/rootRoute'));
 
 
 // endpoints
-app.get('/states', (req, res) => {
+app.get('/states', async(req, res) => {
     let ary = [...statesArray];
     
     if(req.query && req.query.contig){
@@ -39,6 +39,15 @@ app.get('/states', (req, res) => {
             ary = [ary[1], ary[10]];
         }
     }
+    // loop thru array and add funfacts from db
+    for(let i = 0; i < ary.length; i++){
+        let data = ary[i];
+        let result = await State.findOne({stateCode: data.code.toUpperCase()});
+        if(result){
+            ary[i] = {...data, funfacts: result.funfacts};
+        }
+    }
+
     return res.json(ary);
 });
 
