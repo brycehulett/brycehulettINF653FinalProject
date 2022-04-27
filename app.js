@@ -90,7 +90,7 @@ app.get('/states/:state/admission', middleware.verifyStates, (req, res) => {
 });
 
 app.post("/states/:state/funfact", middleware.verifyStates, async(req, res, next)=>{
-    if(!req.body.funfact){
+    if(!req.body.funfacts){
         return res.sendStatus(400).json({
             "message": "State fun facts value required"
         });
