@@ -65,6 +65,7 @@ app.get('/states/:state/funfact', middleware.verifyStates, async(req, res) => {
     if(result){
         return res.json({funfacts: result.funfacts[Math.floor(Math.random() * result.funfacts.length)]});
     } 
+    return res.status(400).json({"message": `No Fun Facts found for ${statesArray[req.statesIndex].state}`});
 });
 
 app.get('/states/:state/capital', middleware.verifyStates, (req, res) => {
@@ -89,8 +90,7 @@ app.get('/states/:state/admission', middleware.verifyStates, (req, res) => {
 });
 
 app.post("/states/:state/funfact", middleware.verifyStates, async(req, res, next)=>{
-    if(!req.body.funfacts){
-        console.log("Content param not sent w/ request");
+    if(!req.body.funfact){
         return res.sendStatus(400).json({
             "message": "State fun facts value required"
         });
@@ -158,6 +158,9 @@ app.patch("/states/:state/funfact", middleware.verifyStates, async(req, res, nex
     const data = statesArray[req.statesIndex];
     let result = await State.findOne({stateCode: data.code.toUpperCase()});
 
+    if(!result){
+        return res.status(404).json({"message": `No Fun Facts found for ${data.state}`});
+    }
     
     if(!result || result.funfacts.length < req.body.index || req.body.index <= 0){
         return res.status(404).json({"message": `No Fun Fact found at that index for ${data.state}`});
