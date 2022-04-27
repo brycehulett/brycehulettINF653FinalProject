@@ -63,7 +63,7 @@ app.get('/states/:state', middleware.verifyStates, async(req, res) => {
 app.get('/states/:state/funfact', middleware.verifyStates, async(req, res) => {
     const result = await State.findOne({stateCode: statesArray[req.statesIndex].code.toUpperCase()});
     if(result){
-        return res.json({funfacts: result.funfacts[Math.floor(Math.random() * result.funfacts.length)]});
+        return res.json({funfact: result.funfacts[Math.floor(Math.random() * result.funfacts.length)]});
     } 
     return res.status(400).json({"message": `No Fun Facts found for ${statesArray[req.statesIndex].state}`});
 });
@@ -91,12 +91,12 @@ app.get('/states/:state/admission', middleware.verifyStates, (req, res) => {
 
 app.post("/states/:state/funfact", middleware.verifyStates, async(req, res, next)=>{
     if(!req.body.funfacts){
-        return res.sendStatus(400).json({
+        return res.status(400).json({
             "message": "State fun facts value required"
         });
     }
     if(!Array.isArray(req.body.funfacts)){
-        return res.sendStatus(400).json({
+        return res.status(400).json({
             "message": "State fun facts value must be an array"
         });
     }
